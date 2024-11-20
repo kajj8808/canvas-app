@@ -11,6 +11,7 @@ export default function WaveCanvas() {
   // 3. 기하학 특성 가진 sin 사용 -> (0 = 0 , 90 = 1, 180 = 0 , 270 = -1 , 360 = 0)
   // 450 -> 하나의 주기가 360 을 넘을 경우 450 - 360 = 90 => 90 = 1 이니 sin(450) -> 1
 
+  // TODO: 위 아래로 움직이는 구 출력 해보기.
   useEffect(() => {
     if (canvasRef.current) {
       const canvas = canvasRef.current;
