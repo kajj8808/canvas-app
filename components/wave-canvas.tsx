@@ -10,8 +10,8 @@ export default function WaveCanvas() {
   // 2. 움직이게.. ?
   // 3. 기하학 특성 가진 sin 사용 -> (0 = 0 , 90 = 1, 180 = 0 , 270 = -1 , 360 = 0)
   // 450 -> 하나의 주기가 360 을 넘을 경우 450 - 360 = 90 => 90 = 1 이니 sin(450) -> 1
+  // 4. 움직이는 공을 선으로 연결.
 
-  // TODO: 위 아래로 움직이는 구 출력 해보기.
   useEffect(() => {
     if (canvasRef.current) {
       const canvas = canvasRef.current;
@@ -19,33 +19,86 @@ export default function WaveCanvas() {
       if (!ctx) return;
       const animationSpeed = 0.5;
 
-      // 각도 (90 직각 180 반원.)
-
       const centerY = canvas.height / 2;
-      const centetX = canvas.width / 2;
+      const canvasWidth = canvas.width;
 
-      let angle = 90;
-      let yPosition = centerY;
+      const startWaveAnimation = () => {
+        /**
+         *  baseX => 기본 X값 canvas 에서 위 아래로 움직이는 원의 기본 위치값입니다.
+         *  baseY => 기본 Y값 원의 시작 Y점. 이 Y점을 기준으로 위 아래로 움직입니다.
+         *  positionY => 화면에 표시되는 Y의 위치입니다. 이 값으로 위 아래로 움직입니다.
+         *  max => 위 아래로 움직일 수 있는 최대 값입니다. 이 값이 클수록 변동 폭이 큽니다. (랜덤 으로 260 시작, 270 시작 이렇게 사용 하고 있습니다. )
+         *  angle => sin 함수를 사용하기 위한 값입니다. sin 특성 상 90도, 180도 .. 360 도 이렇게 돌면서 -1~1 사이의 값을 뽑아 낼 수 있기에 이 값을 기준으로 위 아래로 움직입니다. 그렇기에 이 값을 변경하면 시작 위치를 변경 할 수 있습니다.
+         */
+        const circles = [
+          {
+            baseX: canvasWidth * 0,
+            baseY: centerY,
+            positionY: centerY,
+            max: Math.random() * 100 + 150,
+            angle: 90,
+          },
+          {
+            baseX: canvasWidth * 0.2,
+            baseY: centerY,
+            positionY: centerY,
+            max: Math.random() * 100 + 150,
+            angle: 90,
+          },
+          {
+            baseX: canvasWidth * 0.4,
+            baseY: centerY,
+            positionY: centerY,
+            max: Math.random() * 100 + 150,
+            angle: 90,
+          },
+          {
+            baseX: canvasWidth * 0.6,
+            baseY: centerY,
+            positionY: centerY,
+            max: Math.random() * 100 + 150,
+            angle: 90,
+          },
+          {
+            baseX: canvasWidth * 0.8,
+            baseY: centerY,
+            positionY: centerY,
+            max: Math.random() * 100 + 150,
+            angle: 90,
+          },
+          {
+            baseX: canvasWidth * 1,
+            baseY: centerY,
+            positionY: centerY,
+            max: Math.random() * 100 + 150,
+            angle: 90,
+          },
+        ];
 
-      const drawFrame = () => {
-        // Math.sin은 라디안 단위로 계산하기에 각도를 라디안으로 변환.
-        // 360도는 2PI 라디안 => 1도는 PI/180 즉 각도 * PI / 180 으로 라디안을 구할 수 있음.
-        const radians = (angle * Math.PI) / 180;
-        // 1 ~ -1 의 값
-        const sine = Math.sin(radians);
-        // (centerY = 300 , sine = 0.5) => 300 + 0.5 * 150 =>  375..
-        // (centerY = 300 , sine = 0.4) => 300 + 0.4 * 150 =>  360..
-        yPosition = centerY + sine * 150;
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        ctx.beginPath();
-        ctx.arc(centetX, yPosition, 50, 0, 2 * Math.PI);
-        ctx.fillStyle = "#f1f1f1";
-        ctx.fill();
-        angle += animationSpeed;
+        const drawFrame = () => {
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+          circles.forEach((circle) => {
+            // Math.sin은 라디안 단위로 계산하기에 각도를 라디안으로 변환.
+            const radians = (circle.angle * Math.PI) / 180;
+            const sine = Math.sin(radians);
+
+            circle.positionY = circle.baseY + sine * circle.max;
+
+            ctx.beginPath();
+            ctx.arc(circle.baseX, circle.positionY, 50, 0, 2 * Math.PI);
+            ctx.fillStyle = "#f1f1f1";
+            ctx.fill();
+            circle.angle += animationSpeed;
+          });
+          // TODO: 선으로 연결 하는 부분 작성.
+
+          requestAnimationFrame(drawFrame);
+        };
+
         requestAnimationFrame(drawFrame);
       };
 
-      requestAnimationFrame(drawFrame);
+      startWaveAnimation();
     }
   }, []);
 
@@ -54,8 +107,8 @@ export default function WaveCanvas() {
       <canvas
         ref={canvasRef}
         className="max-w-4xl border aspect-square"
-        width={1280}
-        height={1280}
+        width={1080}
+        height={1080}
       />
     </div>
   );
