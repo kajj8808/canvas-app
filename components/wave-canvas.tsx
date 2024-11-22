@@ -17,7 +17,7 @@ export default function WaveCanvas() {
       const canvas = canvasRef.current;
       const ctx = canvas.getContext("2d");
       if (!ctx) return;
-      const animationSpeed = 0.5;
+      const animationSpeed = 1;
 
       const centerY = canvas.height / 2;
       const canvasWidth = canvas.width;
@@ -37,60 +37,100 @@ export default function WaveCanvas() {
             positionY: centerY,
             max: Math.random() * 100 + 150,
             angle: 90,
+            isAnimation: false,
           },
           {
             baseX: canvasWidth * 0.2,
             baseY: centerY,
             positionY: centerY,
             max: Math.random() * 100 + 150,
-            angle: 90,
+            angle: 180,
+            isAnimation: true,
           },
           {
             baseX: canvasWidth * 0.4,
             baseY: centerY,
             positionY: centerY,
             max: Math.random() * 100 + 150,
-            angle: 90,
+            angle: 270,
+            isAnimation: true,
           },
           {
             baseX: canvasWidth * 0.6,
             baseY: centerY,
             positionY: centerY,
             max: Math.random() * 100 + 150,
-            angle: 90,
+            angle: 360,
+            isAnimation: true,
           },
           {
             baseX: canvasWidth * 0.8,
             baseY: centerY,
             positionY: centerY,
             max: Math.random() * 100 + 150,
-            angle: 90,
+            angle: 450,
+            isAnimation: true,
           },
           {
             baseX: canvasWidth * 1,
             baseY: centerY,
             positionY: centerY,
             max: Math.random() * 100 + 150,
-            angle: 90,
+            angle: 60,
+            isAnimation: false,
           },
         ];
-
         const drawFrame = () => {
           ctx.clearRect(0, 0, canvas.width, canvas.height);
+
           circles.forEach((circle) => {
-            // Math.sin은 라디안 단위로 계산하기에 각도를 라디안으로 변환.
-            const radians = (circle.angle * Math.PI) / 180;
-            const sine = Math.sin(radians);
+            if (circle.isAnimation) {
+              const radians = (circle.angle * Math.PI) / 180;
+              const sine = Math.sin(radians);
 
-            circle.positionY = circle.baseY + sine * circle.max;
+              circle.positionY = circle.baseY + sine * circle.max;
 
+              circle.angle += animationSpeed;
+            }
+
+            /* 
+            // circle를 화면에 찍는 부분.
             ctx.beginPath();
-            ctx.arc(circle.baseX, circle.positionY, 50, 0, 2 * Math.PI);
+            ctx.arc(circle.baseX, circle.positionY, 20, 0, 2 * Math.PI);
             ctx.fillStyle = "#f1f1f1";
             ctx.fill();
-            circle.angle += animationSpeed;
+            ctx.closePath() 
+            */
           });
-          // TODO: 선으로 연결 하는 부분 작성.
+
+          ctx.beginPath();
+
+          let prevX = circles[0].baseX;
+          let prevY = circles[0].positionY;
+
+          ctx.moveTo(prevX, prevY);
+          // TODO: 실제 값을 바탕으로 주석 추가
+          for (
+            let circleIndex = 1;
+            circleIndex < circles.length;
+            circleIndex++
+          ) {
+            const cx = (prevX + circles[circleIndex].baseX) / 2;
+            const cy = (prevY + circles[circleIndex].positionY) / 2;
+            // TODO: 직선을 곡선으로 변경시켜 보기.
+            ctx.lineTo(cx, cy);
+            prevX = circles[circleIndex].baseX;
+            prevY = circles[circleIndex].positionY;
+          }
+          // TODO: 주석 추가
+          // 마지막 점 연결 + 캔버스의 아래 부분 연결 해서 fill 하는 부분.
+          ctx.lineTo(prevX, prevY);
+          ctx.lineTo(canvas.width, canvas.height);
+          ctx.lineTo(circles[0].baseX, canvas.height);
+
+          ctx.fillStyle = "#f1f1f1";
+          ctx.fill();
+          ctx.closePath();
 
           requestAnimationFrame(drawFrame);
         };
@@ -106,7 +146,7 @@ export default function WaveCanvas() {
     <div className="flex justify-center items-center w-full h-dvh">
       <canvas
         ref={canvasRef}
-        className="max-w-4xl border aspect-square"
+        className="max-w-4xl border aspect-square w-full"
         width={1080}
         height={1080}
       />
