@@ -17,7 +17,7 @@ export default function WaveCanvas() {
       const canvas = canvasRef.current;
       const ctx = canvas.getContext("2d");
       if (!ctx) return;
-      const animationSpeed = 1;
+      const animationSpeed = 0.8;
 
       const centerY = canvas.height / 2;
       const canvasWidth = canvas.width;
@@ -35,7 +35,7 @@ export default function WaveCanvas() {
             baseX: canvasWidth * 0,
             baseY: centerY,
             positionY: centerY,
-            max: Math.random() * 100 + 150,
+            max: Math.random() * 100 + 110,
             angle: 90,
             isAnimation: false,
           },
@@ -43,7 +43,7 @@ export default function WaveCanvas() {
             baseX: canvasWidth * 0.2,
             baseY: centerY,
             positionY: centerY,
-            max: Math.random() * 100 + 150,
+            max: Math.random() * 100 + 110,
             angle: 180,
             isAnimation: true,
           },
@@ -51,7 +51,7 @@ export default function WaveCanvas() {
             baseX: canvasWidth * 0.4,
             baseY: centerY,
             positionY: centerY,
-            max: Math.random() * 100 + 150,
+            max: Math.random() * 100 + 110,
             angle: 270,
             isAnimation: true,
           },
@@ -59,7 +59,7 @@ export default function WaveCanvas() {
             baseX: canvasWidth * 0.6,
             baseY: centerY,
             positionY: centerY,
-            max: Math.random() * 100 + 150,
+            max: Math.random() * 100 + 110,
             angle: 360,
             isAnimation: true,
           },
@@ -67,7 +67,7 @@ export default function WaveCanvas() {
             baseX: canvasWidth * 0.8,
             baseY: centerY,
             positionY: centerY,
-            max: Math.random() * 100 + 150,
+            max: Math.random() * 100 + 110,
             angle: 450,
             isAnimation: true,
           },
@@ -75,7 +75,7 @@ export default function WaveCanvas() {
             baseX: canvasWidth * 1,
             baseY: centerY,
             positionY: centerY,
-            max: Math.random() * 100 + 150,
+            max: Math.random() * 100 + 110,
             angle: 60,
             isAnimation: false,
           },
@@ -117,8 +117,8 @@ export default function WaveCanvas() {
           ) {
             const cx = (prevX + circles[circleIndex].baseX) / 2;
             const cy = (prevY + circles[circleIndex].positionY) / 2;
-            // TODO: 직선을 곡선으로 변경시켜 보기.
-            ctx.lineTo(cx, cy);
+
+            ctx.quadraticCurveTo(prevX, prevY, cx, cy);
             prevX = circles[circleIndex].baseX;
             prevY = circles[circleIndex].positionY;
           }
@@ -146,9 +146,9 @@ export default function WaveCanvas() {
     <div className="flex justify-center items-center w-full h-dvh">
       <canvas
         ref={canvasRef}
-        className="max-w-4xl border aspect-square w-full"
-        width={1080}
-        height={1080}
+        className="max-w-4xl border aspect-video w-full"
+        width={1280}
+        height={720}
       />
     </div>
   );
